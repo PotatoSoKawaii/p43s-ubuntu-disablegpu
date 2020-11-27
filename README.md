@@ -24,13 +24,12 @@ First, you have to add this line `blacklist nouveau` to `/etc/modprobe.d/blackli
 ## via ACPI Calls based on [N0madK](https://forums.lenovo.com/t5/ThinkPad-P-and-W-Series-Mobile/Disable-NVIDIA-P520-on-the-P43s-ACPI-Calls/m-p/4545175)
 This step is very simple. Edit your `/etc/default/grub` and add this line `acpi_osi="!Linux-Lenovo-NV-HDMI-Audio"` to your CMDLine such as `GRUB_CMDLINE_LINUX_DEFAULT='quiet splash acpi_osi="!Linux-Lenovo-NV-HDMI-Audio"'` notice how the cmdline has double quote like `GRUB_CMDLINE_LINUX_DEFAULT="quiet splash"`? change it to single quote `'` like so `GRUB_CMDLINE_LINUX_DEFAULT='quiet splash'` then add the following `acpi_osi="!Linux-Lenovo-NV-HDMI-Audio"`. Save the file and proceed with `update-grub` command and restart. You shall proceed to the next step.
 ## via SSDT Patching based on [Major Hayden](https://major.io/2020/01/24/disable-nvidia-gpu-thinkpad-t490/)
-I don't know if this step is necessary.. but you may try.
+Before proceed to this step, please do the above `via ACPI Calls method` step. This step won't work well without it.
 `TL:DR`
-I have simplified the process of SSDT Patching from the original author. What you have to do is to download the file here and run these commands in your terminal.
-and then, add this to your GRUB boot entry which is located at `/boot/grub/grub.cfg`. You might want to do the `via ACPI Calls` method first and then go back to this step, else the `update-grub` command will rewrite the grub configuration and you might wanna restart this step. Next
+I have simplified the process of SSDT Patching from the original author. What you have to do is to download the file from repository by running `git clone https://github.com/PotatoSoKawaii/p43s-ubuntu-disablegpu.git`. Next copy the downloaded file, `acpi_override` to `/boot/` by running `sudo cp p43s-ubuntu-disablegpu/acpi_override /boot/`. Next step, edit the grub configuration file in `/boot/grub/grub.cfg` and add `/boot/acpi_override` to your Ubuntu boot entry after the `initrd` such as `initrd	/boot/acpi_override /boot/initrd.img-5.4.0-54-generic`. NOTE THAT THE ACPI_PATCH IS IN FRONT. Lastly, restart your laptop. Run `nvidia-smi` to confirm. If it's disabled, you will then receive this message `NVIDIA-SMI has failed because it couldn't communicate with the NVIDIA driver. Make sure that the latest NVIDIA driver is installed and running.`. If any updates alter the grub configuration in `/etc/default/grub` or you did an `update-grub`, therefore you should repeat the adding `acpi_override` step in the `/boot/grub/grub.cfg`.
 # Supported Device
 - P43s
 - P53s
 - T490 with Nvidia GPU
 - T590 with Nvidia GPU
-<br>`Not sure about others but might work out the same if you know what you're doing.`
+<br>`NOTE that the downloadable file only works with these models.`
